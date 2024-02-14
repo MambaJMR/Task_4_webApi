@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+      <div class='d-flex justify-content-end'>
+        <div class="btn-group">
+            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+             Menu
+            </button>
+        <ul class="dropdown-menu">
+             <li><a class="dropdown-item" href="Register.html">Registration</a></li>
+              <li><a class="dropdown-item" href="Login.html">Login</a></li>
+             <li><a class="dropdown-item" href="logout">Exit</a></li>
+            </ul>
+        </div>
+      </div>
+      <div class="container">
+          <nav>
+              <div class="p-2 bg-light border d-flex justify-content-end">
+                  <div class="p-3 border bg-light">
+                      <button id="block" class="btn btn-warning">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                              <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                          </svg>
+                      </button>
+                  </div>
+                  <div class="p-3 border bg-light">
+                      <button id="unblock" class="btn btn-success">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16">
+                              <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z" />
+                          </svg>
+                      </button>
+                  </div>
+                  <div class="p-3 border bg-light">
+                      <button id="delete" class="btn btn-danger">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                          </svg>Delete
+                      </button>
+                  </div>
+              </div>
+          </nav>
+          <table class="table">
+                  <tr>
+                      <th><input class="form-check-input" id="LordCheckBox" onclick="checkUncheck(this)" type="checkbox" /></th>
+                      <th scope="col">Id</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Last login</th>
+                      <th scope="col">Register Date</th>
+                  </tr>
+          </table>
+      </div>
+</body>
+</html>
+<script>
+    async function getUsers() {
+        const response = await fetch("/Users", {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+        if (response.ok === true) {
+            const users = await response.json();
+            const rows = document.querySelector("tbody");
+            users.forEach(user => rows.append(row(user)));
+        }
+    }
+    async function deleteUsers(users) {
+        await fetch('/Delete',
+            {
+                method: "DELETE",
+                body: JSON.stringify(users),
+                headers: { "Content-Type": "application/json" }
+            }).then((responce) => {
+                if (responce.ok) {
+                    document.location.href = "/Index.html"
+                }
+            })
+
+    }
+    async function blockUsers(users) {
+        await fetch('/Block',
+            {
+                method: "PUT",
+                body: JSON.stringify(users),
+                headers: { "Content-Type": "application/json" }
+            }).then((responce) => {
+                if (responce.ok) {
+                    document.location.href = "/Index.html"
+                }
+                else {
+                    document.location.href = "/Login.html"
+                }
+            });
+    }
+    async function unBlockUsers(users) {
+        await fetch('/UnBlock',
+            {
+                method: "PUT",
+                body: JSON.stringify(users),
+                headers: { "Content-Type": "application/json" }
+            }).then((responce) => {
+                if (responce.ok) {
+                    document.location.href = "/Index.html"
+                }
+            });
+    }
+    function row(user) {
+
+        const tr = document.createElement("tr");
+        let td = document.createElement("td");
+        tr.append(td);
+        const chek = document.createElement("input")
+        chek.id = user.id;
+        chek.className = "form-check-input";
+        chek.name = "check";
+        chek.type = "checkbox";
+        td.append(chek);
+
+        const idTd = document.createElement("td");
+        idTd.append(user.id);
+        tr.append(idTd);
+
+        const nameTd = document.createElement("td");
+        nameTd.append(user.name);
+        tr.append(nameTd);
+
+        const emailTd = document.createElement("td");
+        emailTd.append(user.email);
+        tr.append(emailTd);
+
+        const blockTd = document.createElement("td");
+        blockTd.append(user.isBloked);
+        tr.append(blockTd);
+
+        const lastLoginTd = document.createElement("td");
+        lastLoginTd.append(user.lastLoginDate)
+        tr.append(lastLoginTd);
+
+        const regDateTd = document.createElement("td");
+        regDateTd.append(user.regsitrationDate)
+        tr.append(regDateTd);
+        
+        return tr;
+    }
+    function userSelected() {
+        var input = document.getElementsByName("check");
+        var arr = [];
+        for (var i = 0; i < input.length; i++) {
+            if (input[i].type === 'checkbox' && input[i].checked) {
+                arr.push(parseInt(input[i].id));
+            }
+        }
+        return arr;
+    }
+    document.getElementById("delete").addEventListener("click", async () => {
+
+        await deleteUsers(userSelected());
+    });
+    document.getElementById("block").addEventListener("click", async () => {
+
+        await blockUsers(userSelected());
+    });
+    document.getElementById("unblock").addEventListener("click", async () => {
+
+        await unBlockUsers(userSelected());
+    });
+    getUsers();
+    function checkUncheck(main)
+    {
+        var all = document.getElementsByName("check");
+        if (main.checked === true) {
+            for (var a = 0; a < all.length; a++)
+            {
+                all[a].checked = true;
+            }
+        }
+        else
+        {
+            for (var a = 0; a < all.length; a++) {
+                all[a].checked = false;
+            }
+        }
+        
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>

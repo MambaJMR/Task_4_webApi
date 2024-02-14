@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container w-25 p-3">
+        <h2>Account login</h2>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="userEmail" aria-describedby="emailHelp" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" id="userPassword" placeholder="Password">
+            </div>
+            <div>
+                <a href="Register.html">Register</a>
+            </div>
+            <button id="EnterBtn" type="submit" class="mt-3 btn btn-primary">Submit</button>
+    </div>
+</body>
+</html>
+<script>
+    async function AccountLogin(userEmail, userPassword)
+    {
+        await fetch('/Login',
+            {
+                method: "POST",
+                body: JSON.stringify(
+                {
+                    email: userEmail,
+                    password: userPassword
+                }),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then((responce) => {
+                if (responce.ok) {
+                    document.location.href = "/Index.html"
+                }
+            })
+    }
+    document.getElementById("EnterBtn").addEventListener("click", async () => {
+        const email = document.getElementById("userEmail").value;
+        const password = document.getElementById("userPassword").value;
+        await AccountLogin(email, password);
+        
+
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
